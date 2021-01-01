@@ -127,5 +127,8 @@
       }
     }
   },
-  "defaultProject": "l3m-todolist-angular-y2021"
+  "defaultProject": "l3m-todolist-angular-y2021",
+  "cli": {
+    "analytics": "95df5d31-dbe8-4245-a27f-17b5c6c39e45"
+  }
 }
