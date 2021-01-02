@@ -4,12 +4,15 @@ import { BehaviorSubject } from 'rxjs';
 export interface TodoItem {
   readonly label: string;
   readonly isDone: boolean;
+  readonly id: number;
 }
 
 export interface TodoList {
   readonly label: string;
   readonly items: Readonly< TodoItem[] >;
 }
+
+let idItem = 0;
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +33,12 @@ export class TodolistService {
     const L: TodoList = this.subj.getValue();
     this.subj.next( {
       ...L,
-      items: [...L.items, ...labels.map( label => ({label, isDone: false}) ) ]
+      items: [
+        ...L.items,
+        ...labels.filter( l => l !== '').map(
+            label => ({label, isDone: false, id: idItem++})
+          )
+      ]
     } );
     return this;
   }
@@ -115,5 +123,7 @@ export function tdlToString(tdl: TodoList): string {
 }
 
 export function strToTdl(str: string): TodoList {
-  return JSON.parse(str);
+  const L: TodoList = JSON.parse(str);
+  idItem = L.items.reduce( (id, item) => id <= item.id ? item.id + 1 : id, 0);
+  return L;
 }
