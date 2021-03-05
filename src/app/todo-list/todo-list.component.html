@@ -20,6 +20,16 @@
            >Mark all as complete</label>
     <ul class="todo-list">
       <!-- Inclure les todoitem ici (dans des balises li) -->
+      <li *ngFor="let item of TDL.items"
+          [class.completed] = "item.isDone"
+          [class.editing]   = "compoItem.isEditing"
+      >
+        <app-todo-item  [data]="item"
+                        #compoItem
+                        (update) = "updateItem($event, item)"
+                        (remove) = 'remove(item)'
+        ></app-todo-item>
+      </li>
     </ul>
   </section>
   <footer class="footer" *ngIf="TDL.items.length > 0">
