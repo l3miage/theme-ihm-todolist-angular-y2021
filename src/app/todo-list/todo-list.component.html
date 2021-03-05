@@ -1,0 +1,40 @@
+<section class="todoapp" *ngIf="observable | async as TDL">
+  <header class="header">
+    <h1>{{ TDL.label }}</h1> <!-- Le label de la liste -->
+    <form (ngSubmit)="append(lab.value); lab.value = '' ">
+      <input  name        = "newTodoInput"
+              class       = "new-todo"
+              placeholder = "Que faire?"
+              autofocus #lab/>
+    </form>
+  </header>
+  <section class="main">
+    <input  class="toggle-all"
+            type="checkbox"
+            name="toggleAll"
+            [ngModel] = "TDL.remaining === 0"
+    />
+    <label for="toggleAll"
+           *ngIf = "TDL.items.length > 0"
+           (click) = "updateItems({isDone: TDL.remaining > 0}, TDL.items)"
+           >Mark all as complete</label>
+    <ul class="todo-list">
+      <!-- Inclure les todoitem ici (dans des balises li) -->
+    </ul>
+  </section>
+  <footer class="footer" *ngIf="TDL.items.length > 0">
+    <span class="todo-count"><strong>{{TDL.remaining}}</strong> restantes</span>
+    <ul class="filters">
+      <li>
+        <a class="filterAll">Tous</a>
+      </li>
+      <li>
+        <a class="filterActives">Actifs</a>
+      </li>
+      <li>
+        <a class="filterCompleted">Complétés</a>
+      </li>
+    </ul>
+    <button class="clear-completed" *ngIf="TDL.remaining < TDL.items.length">Supprimer cochées</button>
+  </footer>
+</section>
