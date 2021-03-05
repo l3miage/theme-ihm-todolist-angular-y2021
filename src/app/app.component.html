@@ -3,3 +3,18 @@
 <hr/>
 <!-- Q1) Pour tester rapidement -->
 <h1>Liste de choses à faire L3 MIAGE (debug)</h1>
+<form (ngSubmit)="append(lab.value); lab.value = '' ">
+  <input name="lab" #lab />
+</form>
+
+<ul *ngIf="obsTDL | async as TDL">
+  <li *ngFor="let item of TDL.items">
+    <input type="checkbox" [ngModel]="item.isDone" (ngModelChange)="update({isDone: $event}, item)" />
+    <input                 [ngModel]="item.label " (ngModelChange)="update({label : $event}, item)" />
+    <button (click)="remove(item)">DELETE</button>
+  </li>
+</ul>
+
+<pre>
+  {{obsTDL | async | json}}
+</pre>
