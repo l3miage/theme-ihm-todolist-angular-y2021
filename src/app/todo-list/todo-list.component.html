@@ -20,7 +20,7 @@
            >Mark all as complete</label>
     <ul class="todo-list">
       <!-- Inclure les todoitem ici (dans des balises li) -->
-      <li *ngFor="let item of TDL.items"
+      <li *ngFor="let item of TDL.items.filter( TDL.filter )"
           [class.completed] = "item.isDone"
           [class.editing]   = "compoItem.isEditing"
       >
@@ -36,15 +36,17 @@
     <span class="todo-count"><strong>{{TDL.remaining}}</strong> restantes</span>
     <ul class="filters">
       <li>
-        <a class="filterAll">Tous</a>
+        <a class="filterAll" [class.selected]="TDL.filter === filterAll" (click)="filter = filterAll">Tous</a>
       </li>
       <li>
-        <a class="filterActives">Actifs</a>
+        <a class="filterActives" [class.selected]="TDL.filter === filterRemaining" (click)="filter = filterRemaining">Actifs</a>
       </li>
       <li>
-        <a class="filterCompleted">Complétés</a>
+        <a class="filterCompleted" [class.selected]="TDL.filter === filterCompleted" (click)="filter = filterCompleted">Complétés</a>
       </li>
     </ul>
-    <button class="clear-completed" *ngIf="TDL.remaining < TDL.items.length">Supprimer cochées</button>
+    <button class="clear-completed"
+            *ngIf="TDL.remaining < TDL.items.length"
+            (click)="removeItems(TDL.items.filter(filterCompleted))">Supprimer cochées</button>
   </footer>
 </section>

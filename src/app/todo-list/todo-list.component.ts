@@ -1,11 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators'
 import { TodoItem, TodoList, TodolistService } from '../todolist.service';
 
 interface TodoAll extends TodoList {
   remaining: number;
+  filter: FctFilter;
 }
+
+type FctFilter = (item: TodoItem) => boolean;
 
 @Component({
   selector: 'app-todo-list',
@@ -15,18 +18,26 @@ interface TodoAll extends TodoList {
 })
 export class TodoListComponent implements OnInit {
   readonly observable: Observable<TodoAll>;
+  readonly filterAll: FctFilter = () => true;
+  readonly filterCompleted: FctFilter = item =>  item.isDone;
+  readonly filterRemaining: FctFilter = item => !item.isDone;
+  private filterSubj = new BehaviorSubject<FctFilter>( this.filterAll );
 
   constructor(private TDLS: TodolistService) {
-    this.observable = this.TDLS.observable.pipe(
-      map( tdl => ({...tdl,
-                    remaining: tdl.items.reduce( (nb, item) => item.isDone ? nb : nb + 1, 0)
-                  })
-      )
+    this.observable = combineLatest([this.TDLS.observable, this.filterSubj]).pipe(
+      map( ([tdl, f]) => ({
+        ...tdl,
+        remaining: tdl.items.reduce( (nb, item) => item.isDone ? nb : nb + 1, 0),
+        filter: f
+      }) )
     );
   }
 
   ngOnInit(): void {
   }
+
+  get filter(): FctFilter {return this.filterSubj.value;}
+  set filter(f: FctFilter) {this.filterSubj.next(f);}
 
   append(label: string): void {
     this.TDLS.append(label);
@@ -34,6 +45,10 @@ export class TodoListComponent implements OnInit {
 
   remove(item: TodoItem): void {
     this.TDLS.remove(item);
+  }
+
+  removeItems(items: TodoItem[]): void {
+    this.TDLS.remove(...items);
   }
 
   updateItem(u: Partial<TodoItem>, item: TodoItem): void {
