@@ -58,4 +58,9 @@ export class TodoListComponent implements OnInit {
   updateItems(u: Partial<TodoItem>, items: Readonly<TodoItem[]>): void {
     this.TDLS.update(u, ...items);
   }
+
+  trackById(index: number, item: TodoItem): number {
+    return item.id;
+  }
+
 }

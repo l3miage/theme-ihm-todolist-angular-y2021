@@ -20,7 +20,7 @@
            >Mark all as complete</label>
     <ul class="todo-list">
       <!-- Inclure les todoitem ici (dans des balises li) -->
-      <li *ngFor="let item of TDL.items.filter( TDL.filter )"
+      <li *ngFor="let item of TDL.items.filter( TDL.filter ); trackBy: trackById"
           [class.completed] = "item.isDone"
           [class.editing]   = "compoItem.isEditing"
       >
